@@ -37,14 +37,21 @@ tests:
 	nosetests3 --with-doctest --with-coverage
 
 check_versions:
-	@PYTHONPATH=. set -e; \
-	DEFAULT=`python3 -c 'import debpython.version as v; print(v.vrepr(v.DEFAULT))'`;\
-	SUPPORTED=`python3 -c 'import debpython.version as v; print(" ".join(sorted(v.vrepr(v.SUPPORTED))))'`;\
+	@PYTHONPATH=. set -ex; \
 	DEB_DEFAULT=`sed -rn 's,^default-version = python([0.9.]*),\1,p' debian/debian_defaults`;\
 	DEB_SUPPORTED=`sed -rn 's|^supported-versions = (.*)|\1|p' debian/debian_defaults | sed 's/python//g;s/,//g'`;\
+	DEFAULT=`python$$DEB_DEFAULT -c 'import debpython.version as v; print(v.vrepr(v.DEFAULT))'`;\
+	SUPPORTED=`python$$DEB_DEFAULT -c 'import debpython.version as v; print(" ".join(sorted(v.vrepr(v.SUPPORTED))))'`;\
+	MIN_SUPPORTED=$${SUPPORTED%% *};\
+	MAX_SUPPORTED=$${SUPPORTED##* };\
 	[ "$$DEFAULT" = "$$DEB_DEFAULT" ] || \
 	(echo 'Please update DEFAULT in debpython/version.py' >/dev/stderr; false);\
 	[ "$$SUPPORTED" = "$$DEB_SUPPORTED" ] || \
-	(echo 'Please update SUPPORTED in debpython/version.py' >/dev/stderr; false)
+	(echo 'Please update SUPPORTED in debpython/version.py' >/dev/stderr; false);\
+	grep -Fq "python3-supported-min (= $$MIN_SUPPORTED)" debian/control || \
+	(echo 'Please update python3-supported-min in debian/control.in' >/dev/stderr; false);\
+	grep -Fq "python3-supported-max (= $$MAX_SUPPORTED)" debian/control || \
+	(echo 'Please update python3-supported-max in debian/control.in' >/dev/stderr; false)
+
 
 .PHONY: clean tests test% check_versions
