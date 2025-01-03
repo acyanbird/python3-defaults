@@ -176,7 +176,7 @@ Package: libpython3-dbg
 Architecture: any
 Multi-Arch: same
 Section: debug
-Depends: libpython3.12t64-dbg (>= 3.12.7-1~), ${misc:Depends}
+Depends: libpython3.12-dbg (>= 3.12.7-1~), ${misc:Depends}
 Breaks: python3-dbg (<< 3.8.0-1)
 Replaces: python3-dbg (<< 3.8.0-1)
 Description: debug build of the Python 3 Interpreter (version 3.12)
@@ -276,7 +276,7 @@ Multi-Arch: same
 Section: debug
 Depends: libpython3-dbg (= ${binary:Version}),
  ${misc:Depends},
- libpython3.12t64-dbg,
+ libpython3.12-dbg,
  libpython3.13-dbg,
 Description: package depending on all supported Python 3 debugging packages
  The package currently depends on libpython3.12-dbg and libpython3.13-dbg. In
